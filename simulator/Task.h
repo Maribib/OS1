@@ -13,6 +13,8 @@
 #include <vector>
 #include <iostream>
 
+#include "Page.h"
+
 class Task {
 public:
 	Task(int, int, int, int, int);
@@ -25,6 +27,10 @@ public:
 	int getWCET() { return this->WCET; }
 	int getMemory() { return this->memory; }
 
+	int getPriority() { return this->priority; }
+
+	void setPriority(int priority) { this->priority=priority; }
+
 	friend std::ostream& operator<< (std::ostream &out, Task &aTask);
 
 private:
@@ -33,6 +39,11 @@ private:
 	int deadline;
 	int WCET;
 	int memory;
+
+	int timeLeft;
+	int priority;
+
+	std::vector<Page> pages;
 };
 
 #endif /* SIMULATOR_TASK_H_ */

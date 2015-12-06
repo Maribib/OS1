@@ -6,10 +6,15 @@
  */
 
 #include "Ram.h"
+#include "Page.h"
+
+#include <vector>
 
 Ram::Ram(int size) :
-	size(size)
+	std::vector<Page>(size)
 {}
+
+
 
 Ram::~Ram() {
 	// TODO Auto-generated destructor stub

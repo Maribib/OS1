@@ -20,7 +20,8 @@ Task::Task(std::vector<std::string> infos) :
 	period(std::stoi(infos.at(1))),
 	deadline(std::stoi(infos.at(2))),
 	WCET(std::stoi(infos.at(3))),
-	memory(std::stoi(infos.at(4)))
+	memory(std::stoi(infos.at(4))),
+	timeLeft(WCET)
 {}
 
 Task::~Task() {

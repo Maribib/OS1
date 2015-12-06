@@ -13,6 +13,7 @@
 
 #include "Ram.h"
 #include "Task.h"
+#include "SwapMem.h"
 
 class Simulator {
 public:
@@ -20,9 +21,17 @@ public:
 	void run();
 	virtual ~Simulator();
 private:
+	int gcd(int, int);
+	int lcm(int, int);
+	int computeIntervalEnd();
+	bool audsley(std::vector<Task>);
+	Task* lowestPriorityViable(std::vector<Task>);
+
 	std::vector<Task> tasks;
 	int loadTime;
 	Ram ram;
+	SwapMem swapMem;
+	int simEnd;
 };
 
 #endif /* SIMULATOR_SIMULATOR_H_ */

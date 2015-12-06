@@ -7,7 +7,7 @@
 #include "Simulator.h"
 
 int main( int argc, const char* argv[] ) {
-	if ((argc>4) || (argc<3)) {
+	if ((argc<3) || (4<argc)) {
 		std::cout << "Usage is : ./simAudsley <tasksFile> <ram> <load>=1" << std::endl;
 	} else {
 		std::string taskFileName = std::string(argv[1]);

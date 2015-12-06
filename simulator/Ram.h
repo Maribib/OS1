@@ -17,8 +17,7 @@ public:
 	Ram(int);
 
 	virtual ~Ram();
-private:
-	int size;
+
 };
 
 #endif /* SIMULATOR_RAM_H_ */
