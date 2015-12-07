@@ -24,8 +24,10 @@ private:
 	int gcd(int, int);
 	int lcm(int, int);
 	int computeIntervalEnd();
-	bool audsley(std::vector<Task>);
-	Task* lowestPriorityViable(std::vector<Task>);
+	bool eventOccures(int,int,int);
+	int computeStudyIntervalEnd(std::vector<Task*>*,std::vector<Task*>::iterator);
+	bool audsley(std::vector<Task*>);
+	int lowestPriorityViable(std::vector<Task*>);
 
 	std::vector<Task> tasks;
 	int loadTime;
