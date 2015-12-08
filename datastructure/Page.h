@@ -5,8 +5,8 @@
  *      Author: julianschembri
  */
 
-#ifndef SIMULATOR_PAGE_H_
-#define SIMULATOR_PAGE_H_
+#ifndef DATASTRUCTURE_PAGE_H_
+#define DATASTRUCTURE_PAGE_H_
 
 class Page {
 public:
@@ -24,4 +24,4 @@ private:
 	int id;
 };
 
-#endif /* SIMULATOR_PAGE_H_ */
+#endif /* DATASTRUCTURE_PAGE_H_ */

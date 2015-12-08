@@ -7,9 +7,8 @@
 
 #include "Simulator.h"
 #include "Ram.h"
-#include "Task.h"
-
 #include <cmath>
+#include "../datastructure/Task.h"
 
 Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
 	tasks(tasks),

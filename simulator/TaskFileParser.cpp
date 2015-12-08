@@ -8,13 +8,12 @@
  */
 
 #include "TaskFileParser.h"
-#include "Task.h"
-
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include "../datastructure/Task.h"
 
 TaskFileParser::TaskFileParser(std::string aTaskFileName) :
 	fileName(aTaskFileName)

@@ -6,9 +6,8 @@
  */
 
 #include "Ram.h"
-#include "Page.h"
-
 #include <vector>
+#include "../datastructure/Page.h"
 
 Ram::Ram(int size) :
 	std::vector<Page>(),

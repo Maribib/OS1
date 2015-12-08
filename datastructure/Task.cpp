@@ -5,7 +5,7 @@
  *      Author: julianschembri
  */
 
-#include "Task.h"
+#include "../datastructure/Task.h"
 
 Task::Task(int offset, int period, int deadline, int WCET, int memory) :
 	offset(offset),

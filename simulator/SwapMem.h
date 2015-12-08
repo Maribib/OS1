@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "Page.h"
+#include "../datastructure/Page.h"
 
 class SwapMem : public std::vector<Page>{
 public:

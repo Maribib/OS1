@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include "../datastructure/Task.h"
 #include "TaskFileParser.h"
-#include "Task.h"
 #include "Simulator.h"
 
 int main( int argc, const char* argv[] ) {

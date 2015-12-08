@@ -11,8 +11,8 @@
 #include <vector>
 #include <string>
 
+#include "../datastructure/Task.h"
 #include "Ram.h"
-#include "Task.h"
 #include "SwapMem.h"
 
 class Simulator {

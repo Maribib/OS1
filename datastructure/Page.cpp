@@ -5,7 +5,7 @@
  *      Author: julianschembri
  */
 
-#include "Page.h"
+#include "../datastructure/Page.h"
 
 Page::Page(int id) :
  id(id)

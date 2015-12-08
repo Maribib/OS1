@@ -6,14 +6,14 @@
  *
  */
 
-#ifndef SIMULATOR_TASK_H_
-#define SIMULATOR_TASK_H_
+#ifndef DATASTRUCTURE_TASK_H_
+#define DATASTRUCTURE_TASK_H_
 
 #include <string>
 #include <vector>
 #include <iostream>
 
-#include "Page.h"
+#include "../datastructure/Page.h"
 
 class Task {
 public:
@@ -76,4 +76,4 @@ private:
 	std::vector<Page> pages;
 };
 
-#endif /* SIMULATOR_TASK_H_ */
+#endif /* DATASTRUCTURE_TASK_H_ */
