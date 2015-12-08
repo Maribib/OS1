@@ -15,9 +15,10 @@
 class Ram : public std::vector<Page> {
 public:
 	Ram(int);
-
+	bool freePlaceLeft();
 	virtual ~Ram();
-
+private:
+	int s;
 };
 
 #endif /* SIMULATOR_RAM_H_ */

@@ -7,10 +7,9 @@
 
 #include "Page.h"
 
-Page::Page() {
-	// TODO Auto-generated constructor stub
-
-}
+Page::Page(int id) :
+ id(id)
+{}
 
 Page::~Page() {
 	// TODO Auto-generated destructor stub

@@ -16,8 +16,10 @@ Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
 	ram(Ram(ramSize)),
 	loadTime(loadTime),
 	swapMem(SwapMem()),
-	simEnd(computeIntervalEnd())
-
+	simEnd(computeIntervalEnd()),
+	preemptionCpt(0),
+	idleTime(0),
+	swapTime(0)
 {}
 
 int Simulator::gcd(int a, int b) {
@@ -62,19 +64,187 @@ int Simulator::computeIntervalEnd() {
 	return simEnd = max + (2*lcm);
 }
 
-void Simulator::run() {
+bool Simulator::setPriorities() {
 	std::vector<Task*> tasksRef;
 	for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
 		tasksRef.push_back(&(*it));
 	}
 	if (audsley(tasksRef)) {
-		for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
-			std::cout << it->getPriority() << std::endl;
-		}
+		std::cout << "Priorities set." << std::endl;
+		return true;
 	} else {
-		std::cout << "Impossible" << std::endl;
+		std::cout << "Impossible." << std::endl;
+		return false;
 	}
+}
 
+Task* Simulator::getHighestPriorityTask() {
+	Task* highestPriorityTask = NULL;
+	for (std::vector<Task>::iterator it = tasks.begin(); it!=tasks.end(); ++it ) {
+		if ((!it->execFinished()) && ((highestPriorityTask==NULL) || (highestPriorityTask->getPriority()>it->getPriority()))) {
+			highestPriorityTask = &(*it);
+		}
+	}
+	return highestPriorityTask;
+}
+
+void Simulator::loadPages() {
+	for (std::vector<Task>::iterator it = tasks.begin(); it!=tasks.end(); ++it ) {
+		for (int p=0; p<it->getMemory(); ++p) {
+			swapMem.push_back(Page(it->getPriority()));
+		}
+	}
+}
+
+bool Simulator::allPagesInRam(int id) {
+	for (std::vector<Page>::iterator it = swapMem.begin(); it!=swapMem.end(); ++it) {
+		if (it->getId()==id) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void Simulator::loadAPage(int id) {
+	std::vector<Page>::iterator toDel;
+	for (std::vector<Page>::iterator it = swapMem.begin(); it!=swapMem.end(); ++it) {
+		if (it->getId()==id) {
+			toDel = it;
+		}
+	}
+	swapMem.erase(toDel);
+	ram.push_back(Page(id));
+}
+
+
+int Simulator::findVictim(int id) {
+	int res = -1;
+	for (std::vector<Page>::iterator it = ram.begin(); it!=ram.end(); ++it ) {
+		if (it->getId()!=id) {
+			for (std::vector<Task>::iterator it2 = tasks.begin(); it2!=tasks.end(); ++it2 ) {
+				if (it2->getPriority()==it->getId()){
+					if (res<it2->getLastUse()) {
+						res = it2->getPriority();
+					}
+					break;
+				}
+			}
+		}
+	}
+	return res;
+}
+
+void Simulator::swapPage(int victim, int id) {
+	Page* p = NULL;
+	for (std::vector<Page>::iterator it = swapMem.begin(); it!=swapMem.end(); ++it ) {
+		if (it->getId()==id) {
+			p = &(*it);
+			break;
+		}
+	}
+	for (std::vector<Page>::iterator it = ram.begin(); it!=ram.end(); ++it ) {
+		if (it->getId()==victim) {
+			it->swap(p);
+			break;
+		}
+	}
+}
+
+void Simulator::increaseAllTaskLastUse() {
+	for (std::vector<Task>::iterator it = tasks.begin(); it!=tasks.end(); ++it ) {
+		it->increaseLastUse();
+	}
+}
+
+Task* Simulator::taskReleased(int t,Task* highestPriorityTask) {
+	for (std::vector<Task>::iterator it = tasks.begin(); it!=tasks.end(); ++it ) {
+		if (eventOccures(t,it->getOffset(),it->getPeriod())) { // new task released
+			it->resetExecTimeCpt();
+		}
+		if (!it->execFinished()) {
+			if ((highestPriorityTask==NULL) || (highestPriorityTask->getPriority()>it->getPriority())) {
+				highestPriorityTask = &(*it);
+			}
+		}
+	}
+	return highestPriorityTask;
+}
+
+bool Simulator::isPreemption(Task* aTask, Task* anotherTask) {
+	return (aTask!=NULL) && (anotherTask!=NULL) && (aTask!=anotherTask);
+}
+
+Task* Simulator::executeProgram(Task* highestPriorityTask) {
+	highestPriorityTask->decreaseExecTimeCpt(); // by the highest priority task
+	increaseAllTaskLastUse();
+	highestPriorityTask->resetLastUse();
+	if (highestPriorityTask->execFinished()) { // task end CPU usage
+		highestPriorityTask = NULL;
+	}
+	return highestPriorityTask;
+}
+
+void Simulator::handleLoadOrSwap(Task* highestPriorityTask) {
+	if (!highestPriorityTask->swapFinished()) {
+		highestPriorityTask->decreaseSwapTimeCpt();
+		++swapTime;
+		if (highestPriorityTask->swapFinished()) {
+			if (ram.freePlaceLeft()) {
+				loadAPage(highestPriorityTask->getPriority());
+			} else {
+				int victim = findVictim(highestPriorityTask->getPriority());
+				swapPage(victim,highestPriorityTask->getPriority());
+			}
+		}
+	}
+}
+
+void Simulator::display(int t, Task* highestPriorityTask) {
+	if (highestPriorityTask==NULL) {
+		std::cout << t << "\t" << "IDLE" << std::endl;
+	} else {
+		std::cout << t << "\t" << *highestPriorityTask << "\t" << std::endl;
+	}
+}
+
+void Simulator::run() {
+	bool status = this->setPriorities();
+	if (status) {
+		preemptionCpt = 0, swapTime = 0, idleTime = 0;
+		loadPages();
+
+		Task* highestPriorityTask = NULL;
+		for (int t=0; t<simEnd; ++t) {
+			if (highestPriorityTask!=NULL) { // CPU used
+				if (allPagesInRam(highestPriorityTask->getPriority())) {
+					highestPriorityTask = executeProgram(highestPriorityTask);
+				} else {
+					handleLoadOrSwap(highestPriorityTask);
+				}
+			}
+
+			// Task release
+			Task* newHighestPriorityTask = taskReleased(t,highestPriorityTask);
+			if (isPreemption(newHighestPriorityTask,highestPriorityTask)) ++preemptionCpt;
+			highestPriorityTask = newHighestPriorityTask;
+
+			// Apply swap in/out delay
+			if (highestPriorityTask!=NULL) {
+				if (!allPagesInRam(highestPriorityTask->getPriority())) {
+					if (highestPriorityTask->swapFinished()) {
+						highestPriorityTask->setSwapTimeCpt(loadTime);
+					}
+				}
+			}
+
+			if (highestPriorityTask==NULL) ++idleTime;
+			display(t,highestPriorityTask);
+		}
+		std::cout << "Preemptions : " << preemptionCpt << std::endl;
+		std::cout << "Idle time : " << idleTime << std::endl;
+		std::cout << "Swap time : " << swapTime << std::endl;
+		std::cout << "System usage : " << float(simEnd-idleTime)*100/simEnd << "%" << std::endl;
+	}
 }
 
 bool Simulator::audsley(std::vector<Task*> tasksRef) {

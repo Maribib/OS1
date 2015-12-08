@@ -12,7 +12,10 @@ Task::Task(int offset, int period, int deadline, int WCET, int memory) :
 	period(period),
 	deadline(deadline),
 	WCET(WCET),
-	memory(memory)
+	memory(memory),
+	execTimeCpt(0),
+	lastUse(-1),
+	swapTimeCpt(0)
 {}
 
 Task::Task(std::vector<std::string> infos) :
@@ -21,7 +24,9 @@ Task::Task(std::vector<std::string> infos) :
 	deadline(std::stoi(infos.at(2))),
 	WCET(std::stoi(infos.at(3))),
 	memory(std::stoi(infos.at(4))),
-	timeLeft(WCET)
+	execTimeCpt(0),
+	lastUse(-1),
+	swapTimeCpt(0)
 {}
 
 Task::~Task() {
@@ -34,6 +39,10 @@ std::ostream& operator<< (std::ostream &out, Task &aTask) {
 			<< ", D:" << aTask.deadline
 			<< ", W:" << aTask.WCET
 			<< ", M:" << aTask.memory
+			<< ", C:" << aTask.execTimeCpt
+			<< ", P:" << aTask.priority
+			<< ", S:"  << aTask.swapTimeCpt
+			<< ", U:"  << aTask.lastUse
 			<< "]";
 	return out;
 }

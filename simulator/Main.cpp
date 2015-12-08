@@ -12,7 +12,7 @@ int main( int argc, const char* argv[] ) {
 	} else {
 		std::string taskFileName = std::string(argv[1]);
 		int ramSize = int(std::stoi(argv[2]));
-		int loadTime = argc==3 ? int(std::stoi(argv[3])) : 1;
+		int loadTime = argc==4 ? int(std::stoi(argv[3])) : 1;
 
 		TaskFileParser parser(taskFileName);
 		std::vector<Task> tasks = parser.parse();
