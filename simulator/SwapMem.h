@@ -15,6 +15,7 @@
 class SwapMem : public std::vector<Page>{
 public:
 	SwapMem();
+	friend std::ostream& operator<< (std::ostream &out, SwapMem & aSwapMem);
 	virtual ~SwapMem();
 };
 

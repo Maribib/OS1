@@ -18,29 +18,33 @@
 class Simulator {
 public:
 	Simulator(std::vector<Task>, int, int);
-	void run();
+	void simulate();
 	virtual ~Simulator();
 private:
+	bool meetDeadline(int,Task*);
+	bool meetAllDeadline(std::vector<Task*>*,int);
+	bool run(std::vector<Task*>*,int,bool,Task* = NULL);
+	void clean(std::vector<Task*>*);
 	int gcd(int, int);
 	int lcm(int, int);
 	bool setPriorities();
 	void swapPage(int victim, int id);
-	void loadPages();
-	void increaseAllTaskLastUse();
-	Task* taskReleased(int,Task*);
+	void loadPages(std::vector<Task*>*);
+	void increaseAllTaskLastUse(std::vector<Task*>*);
+	Task* taskReleased(std::vector<Task*>*,int,Task*);
 	bool allPagesInRam(int);
 	void loadAPage(int);
-	int findVictim(int);
+	int findVictim(std::vector<Task*>*,int);
 	Task* getHighestPriorityTask();
 	int computeIntervalEnd();
-	Task* executeProgram(Task*);
-	void handleLoadOrSwap(Task*);
+	void executeProgram(std::vector<Task*>*,Task*);
+	void handleLoadOrSwap(std::vector<Task*>*,Task*);
 	void display(int,Task*);
 	bool isPreemption(Task*, Task*);
 	bool eventOccures(int,int,int);
-	int computeStudyIntervalEnd(std::vector<Task*>*,std::vector<Task*>::iterator);
-	bool audsley(std::vector<Task*>);
-	int lowestPriorityViable(std::vector<Task*>);
+	int computeStudyIntervalEnd(std::vector<Task*>*);
+	bool audsley(std::vector<Task*>*);
+	int lowestPriorityViable(std::vector<Task*>*);
 
 	std::vector<Task> tasks;
 	int loadTime;

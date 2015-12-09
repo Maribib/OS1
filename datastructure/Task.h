@@ -25,16 +25,18 @@ public:
 	int getPeriod() { return this->period; };
 	int getDeadline() { return this->deadline; };
 	int getWCET() { return this->WCET; };
+	void setWCET(int WCET) { this->WCET = WCET; }
 	int getMemory() { return this->memory; };
 
 	int getPriority() { return this->priority; };
 	void setPriority(int priority) { this->priority=priority; };
 
+	void setLastUse(int lastUse) { this->lastUse=lastUse; }
 	int getLastUse() { return this->lastUse; };
 	void increaseLastUse() { ++this->lastUse; };
 	void resetLastUse() { this->lastUse=0; };
 
-
+	void setExecTimeCpt(int execTimeCpt) { this->execTimeCpt=execTimeCpt; }
 	int getExecTimeCpt() { return this->execTimeCpt; }
 	void resetExecTimeCpt() {
 		if (this->execFinished()) this->execTimeCpt = this->WCET;

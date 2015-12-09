@@ -18,7 +18,7 @@ int main( int argc, const char* argv[] ) {
 		std::vector<Task> tasks = parser.parse();
 
 		Simulator s(tasks, ramSize, loadTime);
-		s.run();
+		s.simulate();
 	}
 	return 0;
 }

@@ -15,7 +15,8 @@ Task::Task(int offset, int period, int deadline, int WCET, int memory) :
 	memory(memory),
 	execTimeCpt(0),
 	lastUse(-1),
-	swapTimeCpt(0)
+	swapTimeCpt(0),
+	priority(-1)
 {}
 
 Task::Task(std::vector<std::string> infos) :
@@ -26,7 +27,8 @@ Task::Task(std::vector<std::string> infos) :
 	memory(std::stoi(infos.at(4))),
 	execTimeCpt(0),
 	lastUse(-1),
-	swapTimeCpt(0)
+	swapTimeCpt(0),
+	priority(-1)
 {}
 
 Task::~Task() {
