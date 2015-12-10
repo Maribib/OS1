@@ -16,10 +16,20 @@ Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
 	loadTime(loadTime),
 	swapMem(SwapMem()),
 	simEnd(computeIntervalEnd()),
+	utilization(computeUtilisation()),
 	preemptionCpt(0),
 	idleTime(0),
-	swapTime(0)
+	swapTime(0),
+	swapCpt(0)
 {}
+
+float Simulator::computeUtilisation() {
+	float utilization = 0;
+	for (std::vector<Task>::iterator it= tasks.begin(); it!=tasks.end(); ++it) {
+		utilization += float(it->getWCET())/it->getPeriod();
+	}
+	return utilization;
+}
 
 int Simulator::gcd(int a, int b) {
     while (true) {
@@ -191,6 +201,7 @@ void Simulator::handleLoadOrSwap(std::vector<Task*>* tasksRef,Task* highestPrior
 		highestPriorityTask->decreaseSwapTimeCpt();
 		++swapTime;
 		if (highestPriorityTask->swapFinished()) {
+			++swapCpt;
 			if (ram.freePlaceLeft()) {
 				loadAPage(highestPriorityTask->getPriority());
 			} else {
@@ -205,9 +216,9 @@ void Simulator::display(int t, Task* highestPriorityTask) {
 	if (highestPriorityTask==NULL) {
 		std::cout << t << "\t" << "IDLE\t" ;
 	} else {
-		std::cout << t << "\t" << *highestPriorityTask << "\t";
+		std::cout << t << "\t" << *highestPriorityTask << " ";
 	}
-	std::cout << swapMem << "\t" << ram << std::endl;
+	std::cout << swapMem << " " << ram << std::endl;
 }
 
 void Simulator::simulate() {
@@ -217,7 +228,7 @@ void Simulator::simulate() {
 		for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
 			tasksRef.push_back(&(*it));
 		}
-		run(&tasksRef, simEnd, true);
+		run(&tasksRef, simEnd, 1);
 	}
 }
 
@@ -236,12 +247,13 @@ bool Simulator::meetAllDeadline(std::vector<Task*>* tasksRef,int t) {
 	return true;
 }
 
-bool Simulator::run(std::vector<Task*>* tasksRef, int length, bool verbose, Task* flaggedTask) {
+bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task* flaggedTask) {
 	// Reset all datastructures and variables
 	clean(tasksRef);
-	preemptionCpt = 0, swapTime = 0, idleTime = 0;
+	preemptionCpt = 0, swapTime = 0, idleTime = 0, swapCpt = 0;
 
 	loadPages(tasksRef);
+	std::cout << length << " " << tasksRef->size() << std::endl;
 
 	Task* highestPriorityTask = NULL;
 	for (int t=0; t<length; ++t) {
@@ -278,13 +290,15 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, bool verbose, Task
 		}
 
 		if (highestPriorityTask==NULL) ++idleTime;
-		if (verbose) display(t,highestPriorityTask);
+		if (verbose>1) display(t,highestPriorityTask);
 	}
-	if (verbose) {
+	if (verbose>0) {
 		std::cout << "Preemptions : " << preemptionCpt << std::endl;
 		std::cout << "Idle time : " << idleTime << std::endl;
 		std::cout << "Swap time : " << swapTime << std::endl;
-		std::cout << "System usage : " << float(simEnd-idleTime)*100/simEnd << "%" << std::endl;
+		std::cout << "System utilization : " << utilization*100 << "%" << std::endl;
+		std::cout << "Nb Swap : " << swapCpt << std::endl;
+		std::cout << "System Load : " << float(simEnd-idleTime)*100/simEnd << "%" << std::endl;
 	}
 	return true;
 }
@@ -326,7 +340,7 @@ int Simulator::lowestPriorityViable(std::vector<Task*>* tasksRef) {
 		for (int j = 0; j<tasksRef->size(); ++j) {
 			if (i!=j) tasksRef->at(j)->setPriority(p++);
 		}
-		bool status = run(tasksRef, computeStudyIntervalEnd(tasksRef),false,tasksRef->at(i));
+		bool status = run(tasksRef, computeStudyIntervalEnd(tasksRef),0,tasksRef->at(i));
 		for (int j = 0; j<tasksRef->size(); ++j) tasksRef->at(j)->setPriority(-1);
 		if (status) return i;
 	}

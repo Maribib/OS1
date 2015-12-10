@@ -23,6 +23,7 @@ public:
 
 	int getOffset() { return this->offset; };
 	int getPeriod() { return this->period; };
+	void setDeadline(int deadline) { this->deadline = deadline; }
 	int getDeadline() { return this->deadline; };
 	int getWCET() { return this->WCET; };
 	void setWCET(int WCET) { this->WCET = WCET; }
@@ -38,28 +39,14 @@ public:
 
 	void setExecTimeCpt(int execTimeCpt) { this->execTimeCpt=execTimeCpt; }
 	int getExecTimeCpt() { return this->execTimeCpt; }
-	void resetExecTimeCpt() {
-		if (this->execFinished()) this->execTimeCpt = this->WCET;
-		else throw;
-	};
-	void decreaseExecTimeCpt() {
-		if (this->execTimeCpt>0) --this->execTimeCpt;
-		else throw ;
-	 };
+	void resetExecTimeCpt() { this->execTimeCpt = this->WCET; };
+	void decreaseExecTimeCpt() { --this->execTimeCpt; };
 	bool execFinished() { return this->execTimeCpt==0; }
 
-
 	int getSwapTimeCpt() { return this->swapTimeCpt; }
-	void setSwapTimeCpt(int load) {
-		if (this->swapFinished()) this->swapTimeCpt = load;
-		else throw;
-	};
-	void decreaseSwapTimeCpt() {
-		if (this->swapTimeCpt>0) --this->swapTimeCpt;
-		else throw ;
-	 };
+	void setSwapTimeCpt(int load) { this->swapTimeCpt = load; };
+	void decreaseSwapTimeCpt() { --this->swapTimeCpt; };
 	bool swapFinished() { return this->swapTimeCpt==0; }
-
 
 	friend std::ostream& operator<< (std::ostream &out, Task &aTask);
 

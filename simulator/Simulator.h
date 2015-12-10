@@ -21,9 +21,10 @@ public:
 	void simulate();
 	virtual ~Simulator();
 private:
+	float computeUtilisation();
 	bool meetDeadline(int,Task*);
 	bool meetAllDeadline(std::vector<Task*>*,int);
-	bool run(std::vector<Task*>*,int,bool,Task* = NULL);
+	bool run(std::vector<Task*>*,int,int,Task* = NULL);
 	void clean(std::vector<Task*>*);
 	int gcd(int, int);
 	int lcm(int, int);
@@ -54,6 +55,8 @@ private:
 	int preemptionCpt;
 	int idleTime;
 	int swapTime;
+	float utilization;
+	int swapCpt;
 };
 
 #endif /* SIMULATOR_SIMULATOR_H_ */
