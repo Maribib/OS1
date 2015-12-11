@@ -33,6 +33,7 @@ private:
 	int lcm(int, int);
 	bool setPriorities();
 	void swapPage(int victim, int id);
+	void swapInOutDelay();
 	void loadPages(std::vector<Task*>*);
 	void increaseAllTaskLastUse(std::vector<Task*>*);
 	Task* taskReleased(std::vector<Task*>*,int,Task*);

@@ -250,6 +250,17 @@ bool Simulator::meetAllDeadline(std::vector<Task*>* tasksRef,int t) {
 	return true;
 }
 
+void Simulator::swapInOutDelay() {
+	if (highestPriorityTask!=NULL) {
+		if (!allPagesInRam(highestPriorityTask->getPriority())) {
+			if (highestPriorityTask->swapFinished()) {
+				if (ram.freePlaceLeft()) highestPriorityTask->setSwapTimeCpt(loadTime);
+				else highestPriorityTask->setSwapTimeCpt(loadTime*2);
+			}
+		}
+	}
+}
+
 bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task* flaggedTask) {
 	// Reset all datastructures and variables
 	clean(tasksRef);
@@ -284,13 +295,7 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task*
 		highestPriorityTask = newHighestPriorityTask;
 
 		// Apply swap in/out delay
-		if (highestPriorityTask!=NULL) {
-			if (!allPagesInRam(highestPriorityTask->getPriority())) {
-				if (highestPriorityTask->swapFinished()) {
-					highestPriorityTask->setSwapTimeCpt(loadTime);
-				}
-			}
-		}
+		swapInOutDelay();
 
 		if (verbose>0) this->notifyAll();
 		if (highestPriorityTask==NULL) ++idleTime;
