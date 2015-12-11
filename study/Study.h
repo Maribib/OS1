@@ -12,8 +12,9 @@ class Study {
 public:
 	Study();
 	void run();
-	void run(int,int,int,std::string);
+	void run(int,int,int,std::string,std::string);
 	virtual ~Study();
+	static void init();
 };
 
 #endif /* STUDY_STUDY_H_ */

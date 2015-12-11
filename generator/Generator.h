@@ -19,7 +19,7 @@ public:
 	void generate();
 	void toFile();
 	virtual ~Generator();
-
+	static void init();
 private:
 	int utilization;
 	int memory;

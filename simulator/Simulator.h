@@ -19,8 +19,15 @@
 class Simulator : public Observable {
 public:
 	Simulator(std::vector<Task>, int, int);
-	void simulate();
+	int simulate(bool = true);
 	Task* getCurrentTask() { return highestPriorityTask; };
+	int getPreemptionCpt() { return preemptionCpt; };
+	int getIdleTime() { return idleTime; };
+	int getSwapTime() { return swapTime; };
+	float getUtilization() { return utilization; }
+	int getSwapCpt() { return swapCpt; };
+	float getSysLoad() { return float(simEnd-idleTime)/simEnd; };
+	int getSimLength() { return simEnd; };
 	std::vector<Task>* getTasks() { return &tasks; };
 	virtual ~Simulator();
 private:
@@ -31,7 +38,7 @@ private:
 	void clean(std::vector<Task*>*);
 	int gcd(int, int);
 	int lcm(int, int);
-	bool setPriorities();
+	bool setPriorities(bool = true);
 	void swapPage(int victim, int id);
 	void swapInOutDelay();
 	void loadPages(std::vector<Task*>*);

@@ -16,6 +16,11 @@
 
 #define LIMIT 0.035
 #define MAX_OFFSET 150
+#define VERBOSE false
+
+ void Generator::init() {
+	srand(time(NULL));
+}
 
 Generator::Generator(int utilization, int memory, int nbTasks, std::string fileName) :
 	utilization(utilization),
@@ -25,7 +30,6 @@ Generator::Generator(int utilization, int memory, int nbTasks, std::string fileN
 {}
 
 void Generator::generate(){
-	srand(time(NULL));
 	float contribution = float(utilization)/(100*nbTasks);
 	float ut;
 	do {
@@ -65,11 +69,11 @@ void Generator::generate(){
 		}
 	} while (std::abs(ut-(float(this->utilization)/100))>LIMIT);
 
-	std::cout << " ut : "<< ut << std::endl;
+	//std::cout << " ut : "<< ut << std::endl;
 }
 
 void Generator::toFile() {
-	std::cout << "Start writing in the file '" << fileName << "'... ";
+	if (VERBOSE) std::cout << "Start writing in the file '" << fileName << "'... ";
 	std::ofstream file;
 	file.open(fileName);
 	if (file.is_open()) {
@@ -84,8 +88,8 @@ void Generator::toFile() {
 			}
 		}
 		file.close();
-		std::cout << "Succeed !" << std::endl;
-	} else std::cout << "Failed !" << std::endl;
+		if (VERBOSE) std::cout << "Succeed !" << std::endl;
+	} else if (VERBOSE) std::cout << "Failed !" << std::endl;
 }
 
 Generator::~Generator() {

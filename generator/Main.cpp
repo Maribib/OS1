@@ -31,7 +31,7 @@ int main( int argc, const char* argv[] ) {
 			if (std::string(argv[i])=="-n") tasks = std::stoi(argv[i+1]);
 			if (std::string(argv[i])=="-o") fileName = argv[i+1];
 		}
-
+		Generator::init();
 		Generator t(usage, memory, tasks, fileName);
 		t.generate();
 		t.toFile();

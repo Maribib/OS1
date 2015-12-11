@@ -15,6 +15,7 @@ int main( int argc, const char* argv[] ) {
 	if (1<argc) {
 		std::cout << "Usage is : ./studyAudsley" << std::endl;
 	} else {
+		Study::init();
 		Study s;
 		s.run();
 	}

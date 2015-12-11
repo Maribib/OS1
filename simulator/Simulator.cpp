@@ -11,6 +11,9 @@
 #include "../datastructure/Task.h"
 #include "../pattern/Observable.h"
 
+#define ERRCODE_AUDSLEY_FAIL 1
+#define ERRCODE_SIMULATION_FAIL 2
+
 Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
 	Observable(),
 	tasks(tasks),
@@ -80,16 +83,16 @@ int Simulator::computeIntervalEnd() {
 	return simEnd = max + (2*lcm);
 }
 
-bool Simulator::setPriorities() {
+bool Simulator::setPriorities(bool verbose) {
 	std::vector<Task*> tasksRef;
 	for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
 		tasksRef.push_back(&(*it));
 	}
 	if (audsley(&tasksRef)) {
-		std::cout << "Priorities set." << std::endl;
+		if (verbose) std::cout << "Priorities set." << std::endl;
 		return true;
 	} else {
-		std::cout << "Impossible." << std::endl;
+		if (verbose) std::cout << "Impossible." << std::endl;
 		return false;
 	}
 }
@@ -224,15 +227,16 @@ void Simulator::display(int t, Task* highestPriorityTask) {
 	std::cout << swapMem << " " << ram << std::endl;
 }
 
-void Simulator::simulate() {
-	bool status = this->setPriorities();
-	if (status) {
-		std::vector<Task*> tasksRef;
-		for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
-			tasksRef.push_back(&(*it));
-		}
-		run(&tasksRef, simEnd, 1);
+int Simulator::simulate(bool verbose) {
+	bool status = this->setPriorities(verbose);
+	if (!status) return ERRCODE_AUDSLEY_FAIL;
+	std::vector<Task*> tasksRef;
+	for (std::vector<Task>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
+		tasksRef.push_back(&(*it));
 	}
+	status = run(&tasksRef, simEnd, verbose*1);
+	if (!status) return ERRCODE_SIMULATION_FAIL;
+	return 0;
 }
 
 bool Simulator::meetDeadline(int t, Task* aTask) {
@@ -267,7 +271,6 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task*
 	preemptionCpt = 0, swapTime = 0, idleTime = 0, swapCpt = 0;
 
 	loadPages(tasksRef);
-	std::cout << length << " " << tasksRef->size() << std::endl;
 
 	highestPriorityTask = NULL;
 	for (int t=0; t<length; ++t) {
