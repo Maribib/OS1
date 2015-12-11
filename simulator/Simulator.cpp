@@ -9,8 +9,10 @@
 #include "Ram.h"
 #include <cmath>
 #include "../datastructure/Task.h"
+#include "../pattern/Observable.h"
 
 Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
+	Observable(),
 	tasks(tasks),
 	ram(Ram(ramSize)),
 	loadTime(loadTime),
@@ -20,7 +22,8 @@ Simulator::Simulator(std::vector<Task> tasks, int ramSize, int loadTime) :
 	preemptionCpt(0),
 	idleTime(0),
 	swapTime(0),
-	swapCpt(0)
+	swapCpt(0),
+	highestPriorityTask(NULL)
 {}
 
 float Simulator::computeUtilisation() {
@@ -255,7 +258,7 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task*
 	loadPages(tasksRef);
 	std::cout << length << " " << tasksRef->size() << std::endl;
 
-	Task* highestPriorityTask = NULL;
+	highestPriorityTask = NULL;
 	for (int t=0; t<length; ++t) {
 
 		if (highestPriorityTask!=NULL) { // CPU used
@@ -289,6 +292,7 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task*
 			}
 		}
 
+		if (verbose>0) this->notifyAll();
 		if (highestPriorityTask==NULL) ++idleTime;
 		if (verbose>1) display(t,highestPriorityTask);
 	}

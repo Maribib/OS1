@@ -12,13 +12,16 @@
 #include <string>
 
 #include "../datastructure/Task.h"
+#include "../pattern/Observable.h"
 #include "Ram.h"
 #include "SwapMem.h"
 
-class Simulator {
+class Simulator : public Observable {
 public:
 	Simulator(std::vector<Task>, int, int);
 	void simulate();
+	Task* getCurrentTask() { return highestPriorityTask; };
+	std::vector<Task>* getTasks() { return &tasks; };
 	virtual ~Simulator();
 private:
 	float computeUtilisation();
@@ -57,6 +60,7 @@ private:
 	int swapTime;
 	float utilization;
 	int swapCpt;
+	Task* highestPriorityTask;
 };
 
 #endif /* SIMULATOR_SIMULATOR_H_ */
