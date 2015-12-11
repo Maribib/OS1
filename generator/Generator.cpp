@@ -16,7 +16,6 @@
 
 #define LIMIT 0.035
 #define MAX_OFFSET 150
-#define VERBOSE false
 
  void Generator::init() {
 	srand(time(NULL));
@@ -72,8 +71,8 @@ void Generator::generate(){
 	//std::cout << " ut : "<< ut << std::endl;
 }
 
-void Generator::toFile() {
-	if (VERBOSE) std::cout << "Start writing in the file '" << fileName << "'... ";
+void Generator::toFile(bool verbose) {
+	if (verbose) std::cout << "Start writing in the file '" << fileName << "'... ";
 	std::ofstream file;
 	file.open(fileName);
 	if (file.is_open()) {
@@ -88,8 +87,8 @@ void Generator::toFile() {
 			}
 		}
 		file.close();
-		if (VERBOSE) std::cout << "Succeed !" << std::endl;
-	} else if (VERBOSE) std::cout << "Failed !" << std::endl;
+		if (verbose) std::cout << "Succeed !" << std::endl;
+	} else if (verbose) std::cout << "Failed !" << std::endl;
 }
 
 Generator::~Generator() {

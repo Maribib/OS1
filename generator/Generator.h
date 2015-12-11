@@ -17,7 +17,7 @@ class Generator {
 public:
 	Generator(int,int,int,std::string);
 	void generate();
-	void toFile();
+	void toFile(bool = false);
 	virtual ~Generator();
 	static void init();
 private:

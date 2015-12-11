@@ -16,6 +16,7 @@ class Ram : public std::vector<Page> {
 public:
 	Ram(int);
 	bool freePlaceLeft();
+	int getS(){return s;}
 	friend std::ostream& operator<< (std::ostream &out, Ram &aRam);
 	virtual ~Ram();
 private:

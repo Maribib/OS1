@@ -305,12 +305,17 @@ bool Simulator::run(std::vector<Task*>* tasksRef, int length, int verbose, Task*
 		if (verbose>1) display(t,highestPriorityTask);
 	}
 	if (verbose>0) {
+		std::cout << "~End of Simulation~" << std::endl;
+		std::cout << "Nb tasks : " << tasks.size() << std::endl;
+		std::cout << "Load duration : " << loadTime << std::endl;
+		std::cout << "Ram Size : " << ram.getS() << std::endl;
 		std::cout << "Preemptions : " << preemptionCpt << std::endl;
 		std::cout << "Idle time : " << idleTime << std::endl;
 		std::cout << "Swap time : " << swapTime << std::endl;
 		std::cout << "System utilization : " << utilization*100 << "%" << std::endl;
 		std::cout << "Nb Swap : " << swapCpt << std::endl;
 		std::cout << "System Load : " << float(simEnd-idleTime)*100/simEnd << "%" << std::endl;
+		std::cout << "Simulation duration : " << simEnd << std::endl;
 	}
 	return true;
 }

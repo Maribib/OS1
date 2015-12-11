@@ -34,7 +34,7 @@ int main( int argc, const char* argv[] ) {
 		Generator::init();
 		Generator t(usage, memory, tasks, fileName);
 		t.generate();
-		t.toFile();
+		t.toFile(true);
 	}
 	return 0;
 }
